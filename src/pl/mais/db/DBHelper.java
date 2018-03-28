@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +16,8 @@ import java.util.logging.Logger;
  */
 public class DBHelper {
 	// JDBC driver name and database URL
-    private final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";  
+    
+	private final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";  
     private final String DB_URL = "jdbc:sqlserver://localhost;databaseName=campus_db;";
     
     //  Database credentials
@@ -54,23 +56,29 @@ public class DBHelper {
         }
     }
     
-    public void testSelectFaculties() {
+    public String[] testSelectFaculties() {
     	try {  
             // Create and execute an SQL statement that returns some data.  
             String SQL = "SELECT * FROM faculties";  
             stmt = conn.createStatement();  
             ResultSet rs = stmt.executeQuery(SQL);  
-
+            ArrayList<String> results = new ArrayList<String>();
             // Iterate through the data in the result set and display it.  
             while (rs.next()) {  
-               System.out.println(rs.getString(1) + " - " + rs.getString(2));  
+               results.add(rs.getString(1) + " - " + rs.getString(2)); 
+               System.out.println(rs.getString(1) + " - " + rs.getString(2));
             }  
+            String[] ret = new String[results.size()];
+            for (int i = 0; i < results.size(); i++) {
+            	ret[i] = results.get(i);
+            }
+            return ret;
          }  
-
-         // Handle any errors that may have occurred.  
+ 
          catch (Exception e) {  
             e.printStackTrace();  
             
          }  
+    	return null;
     }
 }
