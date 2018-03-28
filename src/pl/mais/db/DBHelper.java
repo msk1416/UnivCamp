@@ -70,6 +70,7 @@ public class DBHelper {
          // Handle any errors that may have occurred.  
          catch (Exception e) {  
             e.printStackTrace();  
+            
          }  
     }
 }
