@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.glassfish.jersey.internal.util.Base64;
 
 import pl.mais.db.DBHelper;
+import pl.mais.utils.MD5Utils;
 
 /**
  * Servlet implementation class LoginServlet
@@ -43,22 +44,10 @@ public class LoginServlet extends HttpServlet {
 		DBHelper db = new DBHelper();
 		db.open();
 		try {
-			
-			String pass = request.getParameter("password");
-			StringBuffer hexString = new StringBuffer();
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] bytes = md.digest(pass.getBytes());
-			for (int i = 0; i < bytes.length; i++) {
-			    if ((0xff & bytes[i]) < 0x10) {
-			        hexString.append("0"
-			                + Integer.toHexString((0xFF & bytes[i])));
-			    } else {
-			        hexString.append(Integer.toHexString(0xFF & bytes[i]));
-			    }
-			}
-			String encryptedPassword = hexString.toString();
-			
-			if (db.tryLogin(Integer.parseInt((String)request.getParameter("username")), encryptedPassword)) {
+			String encryptedPassword = 
+					MD5Utils.getMD5HashAsString(request.getParameter("password"));
+			if (db.tryLogin(Integer.parseInt(request.getParameter("username")), encryptedPassword)) {
+				request.getSession().setAttribute("user", request.getParameter("username"));
 				response.sendRedirect(request.getContextPath() + "/index.jsp");
 			} else {
 				response.sendRedirect(request.getContextPath() + "/login.jsp");

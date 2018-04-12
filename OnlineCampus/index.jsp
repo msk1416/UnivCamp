@@ -9,9 +9,14 @@
 </head>
 
 <body>
+
 <%
 	DBHelper db = new DBHelper();
+	application.setAttribute("dbhelper", db);
 	db.open();
+	db.populateUsersCache();%>
+	<h1>Logged as <%= db.getUserById(Integer.valueOf((String)session.getAttribute("user"))).getFirstName() %> </h1>
+	<%
 	String[] faculties = db.testSelectFaculties();
 	db.close();
 	for (int i = 0; i < faculties.length; i++) {

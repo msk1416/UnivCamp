@@ -55,7 +55,8 @@ public class User {
 		return currentStudies;
 	}
 	public void setCurrentStudies(String currentStudies) {
-		this.currentStudies = currentStudies;
+		if (currentStudies == null) this.currentStudies = "";
+		else this.currentStudies = currentStudies;
 	}
 	public int getCurrentEcts() {
 		return currentEcts;
@@ -67,13 +68,15 @@ public class User {
 		return office;
 	}
 	public void setOffice(String office) {
-		this.office = office;
+		if (office == null) this.office = "";
+		else this.office = office;
 	}
 	public String getWorkingLicense() {
 		return workingLicense;
 	}
 	public void setWorkingLicense(String workingLicense) {
-		this.workingLicense = workingLicense;
+		if (workingLicense == null) this.workingLicense = "";
+		else this.workingLicense = workingLicense;
 	}
 	
 	

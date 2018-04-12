@@ -37,6 +37,10 @@ public class DBHelper {
     private HashMap<Integer, 	Registration> 	registrations;
     
     public DBHelper() {
+    	users 			= new HashMap<>();
+    	courses 		= new HashMap<>();
+    	faculties 		= new HashMap<>();
+    	registrations 	= new HashMap<>();
     	try {
     		Class.forName(JDBC_DRIVER);
     	} catch (Exception e) {
@@ -81,6 +85,33 @@ public class DBHelper {
 		}
     }
     
+    public void populateUsersCache () {
+    	String query = "select * from users;";
+    	try {
+    		stmt = conn.createStatement();
+    		ResultSet rs = stmt.executeQuery(query);
+    		while (rs.next()) {
+    			User u = new User();
+    			u.setId(rs.getInt("id"));
+    			u.setFirstName(rs.getString("firstname"));
+    			u.setLastName(rs.getString("lastname"));
+    			u.setBirthday(rs.getDate("birthday").toString());
+    			u.setEmail(rs.getString("email"));
+    			u.setRole(rs.getString("role").charAt(0));
+    			u.setCurrentStudies(rs.getString("curr_studies"));
+    			u.setCurrentEcts(rs.getInt("curr_ects"));
+    			u.setOffice(rs.getString("office_number"));
+    			u.setWorkingLicense(rs.getString("working_license"));
+    			users.put(u.getId(), u);
+    		}
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    public User getUserById (int id) {
+    	return users.get(id);
+    }
     public String[] testSelectFaculties() {
     	try {  
             // Create and execute an SQL statement that returns some data.  
