@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import pl.mais.mapping.*;
 
 /**
  * 
@@ -26,6 +29,12 @@ public class DBHelper {
     
     private Connection conn = null;
     private Statement stmt = null;
+    
+    //Data caches
+    private HashMap<Integer, 	User> 			users;
+    private HashMap<String,		Course> 		courses;
+    private HashMap<String, 	Faculty> 		faculties;
+    private HashMap<Integer, 	Registration> 	registrations;
     
     public DBHelper() {
     	try {
@@ -54,6 +63,22 @@ public class DBHelper {
         } catch (SQLException ex) {
             Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public boolean tryLogin(int userid, String encrPass) {
+    	String query = "select * from logins where user_id = " + userid + " and pass = '" + encrPass + "';";
+    	try {
+    		stmt = conn.createStatement();
+    		ResultSet rs = stmt.executeQuery(query);
+    		boolean loginSucceed = rs.next();
+    		System.out.println("Login " + ((loginSucceed) ? "succeeded." : "failed."));
+			return loginSucceed;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Login failed.");
+			return false;
+		}
     }
     
     public String[] testSelectFaculties() {
