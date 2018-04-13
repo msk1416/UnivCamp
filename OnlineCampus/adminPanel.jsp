@@ -1,3 +1,4 @@
+<%@page import="pl.mais.mapping.Registration"%>
 <%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -132,7 +133,64 @@
 		<input type="submit" value="Remove">
 	</form>
 	<h3>Registries administration</h3>
-	
+	Register a student into a course:
+	<form action="${ pageContext.request.contextPath }/RegisterStudent" method="post">
+		<select name="userToRegister" required>
+			<option disabled selected style="display: none;" value="">Select a student</option>
+
+			<% 
+				userlist = db.getUsersByRole('s');
+				for (User u : userlist) {
+					%>
+						<option value="<%= u.getId() %>"><%= u.getFirstName() %> <%= u.getLastName() %></option>
+					<%
+				}
+			%>
+
+		</select>
+		<select name="coursesToRegister" required>
+			<option disabled selected style="display: none;" value="">Select a course</option>
+			<% 
+				courseslist = db.getCourses();
+				for (Course c : courseslist) {
+					%>
+						<option value="<%= c.getShortId() %>"><%= c.getShortId() %> - <%= c.getFullName() %></option>
+					<%
+				}
+			%>
+		</select>
+		<select name="courseStatus" required onchange="document.getElementById('grade').disabled = (this.value == 'np' || this.value == 'cur') ? true : false;">
+			<option disabled selected style="display: none;" value="">Status</option>
+			<% 
+				String[] statusArr = db.getCourseStatus();
+				for (int i = 0; i < statusArr.length; i += 2) {
+					%>
+						<option value="<%= statusArr[i] %>"><%= statusArr[i+1] %></option>
+					<%
+				}
+			%>
+		</select>
+		<input type="text" disabled placeholder="Grade" name="grade" id="grade" pattern="[+-]?([0-5]*[.])?[0-9]+" title="Enter a valid number in range 0.0 - 5.0, out of range number will be treated as null" required>
+		<input type="password" name="password" placeholder="Admin password" required>
+		<input type="submit" value="Register">
+	</form>
+	Delete a student from a course in the list:
+	<form action="${ pageContext.request.contextPath }/DropStudent" method="post">
+		<select name="registersToDrop" required>
+			<option disabled selected style="display: none;" value="">Select a registration</option>
+			<% 
+				ArrayList<Registration> reglist = db.getRegistrations();
+				for (Registration r : reglist) {
+					User u = db.getUserById(r.getStudentId());
+					%>
+						<option value="<%= r.getRegId() %>"><%= u.getFirstName() + " " + u.getLastName() %> - <%= r.getCourseId() %></option>
+					<%
+				}
+			%>
+		</select>
+		<input type="password" name="password" placeholder="Admin password" required>
+		<input type="submit" value="Delete">
+	</form>
 	<%
 	} else {
 		%> 

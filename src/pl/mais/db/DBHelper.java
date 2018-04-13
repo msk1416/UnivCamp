@@ -1,5 +1,6 @@
 package pl.mais.db;
 
+import java.rmi.StubNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +39,7 @@ public class DBHelper {
     private HashMap<Integer, 	User> 			users;
     private HashMap<String,		Course> 		courses;
     private HashMap<String, 	Faculty> 		faculties;
-    private HashMap<Integer, 	Registration> 	registrations;
+    private HashMap<String, 	Registration> 	registrations;
     
     private boolean needUpdateUsers 			= true;
     private boolean needUpdateFaculties 		= true;
@@ -162,6 +164,27 @@ public class DBHelper {
     	}
     }
     
+    public void populateRegistrationsCache() {
+    	registrations.clear();
+    	String query = "select * from registrations;";
+    	try {
+    		stmt = conn.createStatement();
+    		ResultSet rs = stmt.executeQuery(query);
+    		while (rs.next()) {
+    			Registration r = new Registration();
+    			r.setRegId(rs.getString("reg_id"));
+    			r.setCourseId(rs.getString("course_id"));
+    			r.setStudentId(rs.getInt("student_id"));
+    			r.setGrade(rs.getFloat("grade"));
+    			r.setStatus(rs.getString("status"));
+    			registrations.put(r.getRegId(), r);
+    		}
+    		needUpdateRegistrations = false;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
     public User getUserById (int id) {
     	if (needUpdateUsers) 
     		populateUsersCache();
@@ -230,6 +253,24 @@ public class DBHelper {
     	}
     }
     
+    public boolean addRegistration(int studentId, String courseId, Double grade, String status) {
+    	String query = "insert into registrations values("
+    			+ "'" + studentId + "_" + courseId + "', "
+    			+ studentId + ", "
+    			+ "'" + courseId + "', "
+    			+ (grade != null ? String.valueOf(grade.doubleValue()) : null) + ", "
+    			+ "'" + status + "');";
+    	try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) needUpdateRegistrations = true;
+    		return ret;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
+    
     public boolean removeUser(int id) {
     	String query = "delete from users where id = " + id;
     	try {
@@ -249,6 +290,19 @@ public class DBHelper {
     		stmt = conn.createStatement();
     		boolean ret = stmt.executeUpdate(query) > 0;
     		if (ret) needUpdateCourses = true;
+    		return ret;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
+    
+    public boolean removeRegistration(String regId) {
+    	String query = "delete from registrations where reg_id = '" + regId + "';";
+    	try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) needUpdateRegistrations = true;
     		return ret;
     	} catch (SQLException e) {
     		e.printStackTrace();
@@ -304,4 +358,38 @@ public class DBHelper {
     	return courses.get(shortid);
     }
     
+    public String[] getCourseStatus() {
+    	String query = "select * from coursestatus;";
+    	ArrayList<String> ret = new ArrayList<>();
+    	try {
+    		stmt = conn.createStatement();
+    		ResultSet rs = stmt.executeQuery(query);
+    		while (rs.next()) {
+    			ret.add(rs.getString("status"));
+    			ret.add(rs.getString("description"));
+    		}
+    		String[] arr = new String[ret.size()];
+    		int i = 0;
+    		for (String s : ret) {
+    			arr[i++] = s;
+    		}
+    		return arr;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return new String[0];
+    	}
+    }
+    
+    public ArrayList<Registration> getRegistrations() {
+    	if (needUpdateRegistrations) 
+    		populateRegistrationsCache();
+    	Iterator it = registrations.entrySet().iterator();
+    	Map.Entry entry;
+    	ArrayList<Registration> retlist = new ArrayList<>();
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            retlist.add((Registration)entry.getValue());
+        }
+    	return retlist;
+    } 
 }

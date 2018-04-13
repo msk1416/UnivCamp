@@ -1,17 +1,17 @@
 package pl.mais.mapping;
 
 public class Registration {
-	private int regId;//primary key
+	private String regId;//primary key
 	private int studentId;
 	private String courseId;
 	private float grade;
 	private String status;
 	
 	
-	public int getRegId() {
+	public String getRegId() {
 		return regId;
 	}
-	public void setRegId(int regId) {
+	public void setRegId(String regId) {
 		this.regId = regId;
 	}
 	public int getStudentId() {
