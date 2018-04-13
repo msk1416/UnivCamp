@@ -39,7 +39,10 @@ public class DBHelper {
     private HashMap<String, 	Faculty> 		faculties;
     private HashMap<Integer, 	Registration> 	registrations;
     
-    private boolean needUpdateUsers = true;
+    private boolean needUpdateUsers 			= true;
+    private boolean needUpdateFaculties 		= true;
+    private boolean needUpdateCourses 			= true;
+    private boolean needUpdateRegistrations 	= true;
     
     public DBHelper() {
     	users 			= new HashMap<>();
@@ -116,6 +119,24 @@ public class DBHelper {
     	}
     }
     
+    public void populateFacultiesCache() {
+    	faculties.clear();
+    	String query = "select * from faculties;";
+    	try {
+    		stmt = conn.createStatement();
+    		ResultSet rs = stmt.executeQuery(query);
+    		while (rs.next()) {
+    			Faculty f = new Faculty();
+    			f.setName(rs.getString("name"));
+    			f.setAddress(rs.getString("address"));
+    			faculties.put(f.getName(), f);
+    		}
+    		needUpdateFaculties = false;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
     public User getUserById (int id) {
     	if (needUpdateUsers) 
     		populateUsersCache();
@@ -161,6 +182,19 @@ public class DBHelper {
     	}
     }
     
+    public boolean removeUser(int id) {
+    	String query = "delete from users where id = " + id;
+    	try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) needUpdateUsers = true;
+    		return ret;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
+    
     public ArrayList<User> getUsersByRole(char role) {
     	if (needUpdateUsers) 
     		populateUsersCache();
@@ -177,29 +211,16 @@ public class DBHelper {
         }
     	return retlist;
     }
-    public String[] testSelectFaculties() {
-    	try {  
-            // Create and execute an SQL statement that returns some data.  
-            String SQL = "SELECT * FROM faculties";  
-            stmt = conn.createStatement();  
-            ResultSet rs = stmt.executeQuery(SQL);  
-            ArrayList<String> results = new ArrayList<String>();
-            // Iterate through the data in the result set and display it.  
-            while (rs.next()) {  
-               results.add(rs.getString(1) + " - " + rs.getString(2)); 
-               System.out.println(rs.getString(1) + " - " + rs.getString(2));
-            }  
-            String[] ret = new String[results.size()];
-            for (int i = 0; i < results.size(); i++) {
-            	ret[i] = results.get(i);
-            }
-            return ret;
-         }  
- 
-         catch (Exception e) {  
-            e.printStackTrace();  
-            
-         }  
-    	return null;
+    public ArrayList<Faculty> getFaculties() {
+    	if (needUpdateFaculties) 
+    		populateFacultiesCache();
+    	Iterator it = faculties.entrySet().iterator();
+    	Map.Entry entry;
+    	ArrayList<Faculty> retlist = new ArrayList<>();
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            retlist.add((Faculty)entry.getValue());
+        }
+    	return retlist;
     }
 }

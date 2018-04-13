@@ -8,8 +8,8 @@
 </head>
 <body>
 	<form action="${pageContext.request.contextPath}/LoginServlet" method="post">
-		User ID: <input type="text" name="username"><br/>
-		Password: <input type="password" name="password"><br/>
+		User ID: <input type="text" name="username" placeholder="User identification number"><br/>
+		Password: <input type="password" name="password" placeholder="Password"><br/>
 		<input type="submit" value="Sign in">
 	</form>
 	
