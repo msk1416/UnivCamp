@@ -49,9 +49,15 @@ public class NewUser extends HttpServlet {
 								request.getParameter("email"), 
 								request.getParameter("currentstudies"), 
 								Integer.parseInt(request.getParameter("currentects"))) )  {
-					response.getWriter().println("<html><body><h2 style='color: green'>Student has been added successfully</h2></body></html>");
+					request.getSession().setAttribute("success", true);
+					request.getSession().setAttribute("object", "Student");
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 				} else {
-					response.getWriter().println("<html><body><h2 style='color: red'>Student could not be added</h2></body></html>");
+					request.getSession().setAttribute("success", false);
+					request.getSession().setAttribute("object", "Student");
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 				}
 			} else if (request.getParameter("role").equals("t")) {
 				if (db.addTeacher(request.getParameter("firstname"), 
@@ -59,9 +65,15 @@ public class NewUser extends HttpServlet {
 								request.getParameter("birthday"), 
 								request.getParameter("email"), 
 								request.getParameter("officenumber"))) {
-					response.getWriter().println("<html><body><h2 style='color: green'>Teacher has been added successfully</h2></body></html>");
+					request.getSession().setAttribute("success", true);
+					request.getSession().setAttribute("object", "Teacher");
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 				} else {
-					response.getWriter().println("<html><body><h2 style='color: red'>Teacher could not be added</h2></body></html>");
+					request.getSession().setAttribute("success", false);
+					request.getSession().setAttribute("object", "Teacher");
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 				}
 			}
 			db.close();

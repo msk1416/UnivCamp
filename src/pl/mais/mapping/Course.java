@@ -54,10 +54,10 @@ public class Course {
 	public void setTeacherId(int teacherId) {
 		this.teacherId = teacherId;
 	}
-	public int getnEcts() {
+	public int getNEcts() {
 		return nEcts;
 	}
-	public void setnEcts(int nEcts) {
+	public void setNEcts(int nEcts) {
 		this.nEcts = nEcts;
 	}
 	public String getFaculty() {

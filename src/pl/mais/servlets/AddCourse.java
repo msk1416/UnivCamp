@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import pl.mais.db.DBHelper;
+import pl.mais.mapping.User;
+
 /**
  * Servlet implementation class AddCourse
  */
@@ -34,7 +37,29 @@ public class AddCourse extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		if (((User)request.getSession().getAttribute("user")).getRole() == 'a') {
+			DBHelper db = (DBHelper)getServletContext().getAttribute("dbhelper");
+			db.open();
+			if (db.addCourse(request.getParameter("courseid"), 
+							 request.getParameter("coursename"), 
+							 request.getParameter("mode"), 
+							 Boolean.parseBoolean( request.getParameter("opened") ), 
+							 Integer.parseInt( request.getParameter("maxcapacity") ), 
+							 Integer.parseInt( request.getParameter("teacherid") ), 
+							 Integer.parseInt( request.getParameter("nects") ), 
+							 request.getParameter("faculty"))) {
+				request.getSession().setAttribute("success", true);
+				request.getSession().setAttribute("object", "Course");
+				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+			} else {
+				request.getSession().setAttribute("success", false);
+				request.getSession().setAttribute("object", "Course");
+				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+			}
+			db.close();
+		}
 	}
 
 }

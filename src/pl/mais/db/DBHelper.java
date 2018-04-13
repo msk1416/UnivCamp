@@ -119,6 +119,31 @@ public class DBHelper {
     	}
     }
     
+    public void populateCoursesCache () {
+    	courses.clear();
+    	String query = "select * from courses;";
+    	try {
+    		stmt = conn.createStatement();
+    		ResultSet rs = stmt.executeQuery(query);
+    		while (rs.next()) {
+    			Course c = new Course();
+    			c.setShortId(rs.getString("short_id"));
+    			c.setFullName(rs.getString("full_name"));
+    			c.setMode(rs.getString("mode"));
+    			c.setOpened(rs.getBoolean("opened"));
+    			c.setMaxCapacity(rs.getInt("max_capacity"));
+    			c.setCurrSize(0);
+    			c.setTeacherId(rs.getInt("teacher_id"));
+    			c.setNEcts(rs.getInt("n_ects"));
+    			c.setFaculty("faculty");
+    			courses.put(c.getShortId(), c);
+    		}
+    		needUpdateCourses = false;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
     public void populateFacultiesCache() {
     	faculties.clear();
     	String query = "select * from faculties;";
@@ -182,6 +207,29 @@ public class DBHelper {
     	}
     }
     
+    public boolean addCourse(String shortId, String fullName, String mode, boolean isOpened, int maxCapacity, 
+    		int teacherId, int nEcts, String faculty) {
+    	String query = "insert into courses values("
+    			+ "'" + shortId + "', "
+    			+ "'" + fullName + "', "
+    			+ "'" + mode + "', "
+    			+ (isOpened ? 1 : 0) + ", "
+    			+ maxCapacity + ", "
+    			+ "0, " 
+    			+ teacherId + ", "
+    			+ nEcts + ", "
+				+ "'" + faculty + "');";
+    	try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) needUpdateCourses = true;
+    		return ret;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
+    
     public boolean removeUser(int id) {
     	String query = "delete from users where id = " + id;
     	try {
@@ -223,4 +271,24 @@ public class DBHelper {
         }
     	return retlist;
     }
+    
+    public ArrayList<Course> getCourses() {
+    	if (needUpdateCourses) 
+    		populateCoursesCache();
+    	Iterator it = courses.entrySet().iterator();
+    	Map.Entry entry;
+    	ArrayList<Course> retlist = new ArrayList<>();
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            retlist.add((Course)entry.getValue());
+        }
+    	return retlist;
+    }
+    
+    public Course getCourseByShortId(String shortid) {
+    	if (needUpdateCourses)
+    		populateCoursesCache();
+    	return courses.get(shortid);
+    }
+    
 }
