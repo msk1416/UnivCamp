@@ -50,11 +50,13 @@ public class AddCourse extends HttpServlet {
 							 request.getParameter("faculty"))) {
 				request.getSession().setAttribute("success", true);
 				request.getSession().setAttribute("object", "Course");
+				request.getSession().setAttribute("action", "added");
 				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
 				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 			} else {
 				request.getSession().setAttribute("success", false);
 				request.getSession().setAttribute("object", "Course");
+				request.getSession().setAttribute("action", "added");
 				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
 				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 			}

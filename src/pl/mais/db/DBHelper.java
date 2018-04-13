@@ -243,6 +243,19 @@ public class DBHelper {
     	}
     }
     
+    public boolean removeCourse(String shortId) {
+    	String query = "delete from courses where short_id = " + shortId;
+    	try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) needUpdateCourses = true;
+    		return ret;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
+    
     public ArrayList<User> getUsersByRole(char role) {
     	if (needUpdateUsers) 
     		populateUsersCache();

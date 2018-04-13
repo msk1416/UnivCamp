@@ -51,11 +51,13 @@ public class NewUser extends HttpServlet {
 								Integer.parseInt(request.getParameter("currentects"))) )  {
 					request.getSession().setAttribute("success", true);
 					request.getSession().setAttribute("object", "Student");
+					request.getSession().setAttribute("action", "added");
 					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
 					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 				} else {
 					request.getSession().setAttribute("success", false);
 					request.getSession().setAttribute("object", "Student");
+					request.getSession().setAttribute("action", "added");
 					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
 					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 				}
@@ -66,12 +68,14 @@ public class NewUser extends HttpServlet {
 								request.getParameter("email"), 
 								request.getParameter("officenumber"))) {
 					request.getSession().setAttribute("success", true);
+					request.getSession().setAttribute("action", "added");
 					request.getSession().setAttribute("object", "Teacher");
 					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
 					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 				} else {
 					request.getSession().setAttribute("success", false);
 					request.getSession().setAttribute("object", "Teacher");
+					request.getSession().setAttribute("action", "added");
 					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
 					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 				}

@@ -131,6 +131,7 @@
 		<input type="password" name="password" placeholder="Admin password" required>
 		<input type="submit" value="Remove">
 	</form>
+	<h3>Registries administration</h3>
 	
 	<%
 	} else {

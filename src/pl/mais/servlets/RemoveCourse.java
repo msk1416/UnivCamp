@@ -12,16 +12,16 @@ import pl.mais.mapping.User;
 import pl.mais.utils.MD5Utils;
 
 /**
- * Servlet implementation class RemoveUser
+ * Servlet implementation class RemoveCourse
  */
-@WebServlet("/RemoveUser")
-public class RemoveUser extends HttpServlet {
+@WebServlet("/RemoveCourse")
+public class RemoveCourse extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public RemoveUser() {
+    public RemoveCourse() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -39,20 +39,20 @@ public class RemoveUser extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int userid = ((User)request.getSession().getAttribute("user")).getId();
-		int userToDelete = Integer.parseInt(request.getParameter("userToDelete"));
+		String courseToDelete = request.getParameter("courseToDelete");
 		DBHelper db = (DBHelper)getServletContext().getAttribute("dbhelper");
 		db.open();
 		if ( db.tryLogin(userid, MD5Utils.getMD5HashAsString( request.getParameter("password") )) ) {
-			if (db.removeUser(userToDelete)) {
+			if (db.removeCourse(courseToDelete)) {
 				request.getSession().setAttribute("success", true);
 				request.getSession().setAttribute("action", "removed");
-				request.getSession().setAttribute("object", "User");
+				request.getSession().setAttribute("object", "Course");
 				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
 				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 			} else {
 				request.getSession().setAttribute("success", false);
 				request.getSession().setAttribute("action", "removed");
-				request.getSession().setAttribute("object", "User");
+				request.getSession().setAttribute("object", "Course");
 				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
 				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 			}

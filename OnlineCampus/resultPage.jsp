@@ -20,12 +20,12 @@
 				
 				if ((Boolean)session.getAttribute("success")) {
 					%>
-						<h2 style='color: green'><%= (String)session.getAttribute("object") %> has been added successfully.</h2>
+						<h2 style='color: green'><%= (String)session.getAttribute("object") %> has been <%= (String)session.getAttribute("action") %> successfully.</h2>
 					<%
 					
 				} else {
 					%>
-						<h2 style='color: red'><%= (String)session.getAttribute("object") %> could not be added.</h2>
+						<h2 style='color: red'><%= (String)session.getAttribute("object") %> could not be <%= (String)session.getAttribute("action") %>.</h2>
 					<%
 				}
 			%>
