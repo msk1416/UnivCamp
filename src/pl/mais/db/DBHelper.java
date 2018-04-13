@@ -39,6 +39,8 @@ public class DBHelper {
     private HashMap<String, 	Faculty> 		faculties;
     private HashMap<Integer, 	Registration> 	registrations;
     
+    private boolean needUpdateUsers = true;
+    
     public DBHelper() {
     	users 			= new HashMap<>();
     	courses 		= new HashMap<>();
@@ -89,6 +91,7 @@ public class DBHelper {
     }
     
     public void populateUsersCache () {
+    	users.clear();
     	String query = "select * from users;";
     	try {
     		stmt = conn.createStatement();
@@ -107,16 +110,60 @@ public class DBHelper {
     			u.setWorkingLicense(rs.getString("working_license"));
     			users.put(u.getId(), u);
     		}
+    		needUpdateUsers = false;
     	} catch (SQLException e) {
     		e.printStackTrace();
     	}
     }
     
     public User getUserById (int id) {
+    	if (needUpdateUsers) 
+    		populateUsersCache();
     	return users.get(id);
     }
     
+    public boolean addStudent(String firstName, String lastName, String birthday, String email, String currentStudies, int currentEcts) {
+    	String query = "insert into users (firstname, lastname, birthday, email, role, curr_studies, curr_ects) values("
+    			+ "'" + firstName + "', "
+    			+ "'" + lastName + "', "
+    			+ "'" + birthday + "', "
+    			+ "'" + email + "', "
+    			+ "'s', " 
+    			+ "'" + currentStudies + "', "
+    			+ currentEcts + ");";
+    	try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) needUpdateUsers = true;
+    		return ret;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	} 
+    }
+    
+    public boolean addTeacher(String firstName, String lastName, String birthday, String email, String officeNumber) {
+    	String query = "insert into users (firstname, lastname, birthday, email, role, office_number) values("
+    			+ "'" + firstName + "', "
+    			+ "'" + lastName + "', "
+    			+ "'" + birthday + "', "
+    			+ "'" + email + "', "
+    			+ "'t', " 
+    			+ "'" + officeNumber + "');";
+    	try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) needUpdateUsers = true;
+    		return ret;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
+    
     public ArrayList<User> getUsersByRole(char role) {
+    	if (needUpdateUsers) 
+    		populateUsersCache();
     	Iterator it = users.entrySet().iterator();
     	Map.Entry entry;
     	ArrayList<User> retlist = new ArrayList<User>();

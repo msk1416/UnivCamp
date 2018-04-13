@@ -47,13 +47,25 @@ public class LoginServlet extends HttpServlet {
 			String encryptedPassword = 
 					MD5Utils.getMD5HashAsString(request.getParameter("password"));
 			if (db.tryLogin(Integer.parseInt(request.getParameter("username")), encryptedPassword)) {
-				request.getSession().setAttribute("user", request.getParameter("username"));
-				response.sendRedirect(request.getContextPath() + "/index.jsp");
+				//login succeeded
+				getServletContext().setAttribute("dbhelper", db);
+				char role = db.getUserById(Integer.parseInt(request.getParameter("username"))).getRole();
+				request.getSession().setAttribute("userid", request.getParameter("username"));
+				
+				if (role == 'a') {
+					response.sendRedirect(request.getContextPath() + "/adminPanel.jsp");
+				} else if (role == 's') {
+					response.sendRedirect(request.getContextPath() + "/studentPanel.jsp");
+				} else if (role == 't') {
+					response.sendRedirect(request.getContextPath() + "/teacherPanel.jsp");
+				}
 			} else {
 				response.sendRedirect(request.getContextPath() + "/login.jsp");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.close();
 		}
 		
 	}

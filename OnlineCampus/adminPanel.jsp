@@ -13,18 +13,19 @@
 <body>
 
 <%
-	DBHelper db = new DBHelper();
-	application.setAttribute("dbhelper", db);
+	DBHelper db = (DBHelper)application.getAttribute("dbhelper");
 	db.open();
 	db.populateUsersCache();
-	User current = db.getUserById(Integer.valueOf((String)session.getAttribute("user")));%>
+	User current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
+	session.removeAttribute("user");
+	session.setAttribute("user", current);%>
 	<h1>Logged as <%= current.getFirstName() %> <%= current.getLastName() %></h1>
 	<%
 	
 	db.close();
 	%>
 	Insert new student:
-	<form action=""> 
+	<form action="${ pageContext.request.contextPath }/NewUser" method="post"> 
 		<input type="text" name="firstname" maxlength="50" placeholder="First name"> 
 		<input type="text" name="lastname" maxlength="50" placeholder="Last name">
 		<input type="text" name="birthday" placeholder="Birthday DD/MM/YYYY" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}">
@@ -35,7 +36,7 @@
 		<input type="submit" value="Insert">
 	</form>
 	Insert new teacher:
-	<form action=""> 
+	<form action="${ pageContext.request.contextPath }/NewUser" method="post"> 
 		<input type="text" name="firstname" maxlength="50" placeholder="First name"> 
 		<input type="text" name="lastname" maxlength="50" placeholder="Last name">
 		<input type="text" name="birthday" placeholder="Birthday DD/MM/YYYY" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}">
