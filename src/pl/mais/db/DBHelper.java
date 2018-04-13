@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -111,6 +114,21 @@ public class DBHelper {
     
     public User getUserById (int id) {
     	return users.get(id);
+    }
+    
+    public ArrayList<User> getUsersByRole(char role) {
+    	Iterator it = users.entrySet().iterator();
+    	Map.Entry entry;
+    	ArrayList<User> retlist = new ArrayList<User>();
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            User u = (User)entry.getValue();
+            if (u.getRole() == role) {
+            	retlist.add(u);
+            }
+            //it.remove(); // avoids a ConcurrentModificationException
+        }
+    	return retlist;
     }
     public String[] testSelectFaculties() {
     	try {  
