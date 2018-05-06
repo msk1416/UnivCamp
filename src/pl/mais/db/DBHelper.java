@@ -137,7 +137,7 @@ public class DBHelper {
     			c.setCurrSize(0);
     			c.setTeacherId(rs.getInt("teacher_id"));
     			c.setNEcts(rs.getInt("n_ects"));
-    			c.setFaculty("faculty");
+    			c.setFaculty(rs.getString("faculty"));
     			courses.put(c.getShortId(), c);
     		}
     		needUpdateCourses = false;
@@ -232,14 +232,16 @@ public class DBHelper {
     
     public boolean addCourse(String shortId, String fullName, String mode, boolean isOpened, int maxCapacity, 
     		int teacherId, int nEcts, String faculty) {
-    	String query = "insert into courses values("
+    	String query = "insert into courses"
+    			+ (teacherId == -1 ? "(short_id, full_name, mode, opened, max_capacity, current_size, n_ects, faculty)" : "")
+    			+ " values("
     			+ "'" + shortId + "', "
     			+ "'" + fullName + "', "
     			+ "'" + mode + "', "
     			+ (isOpened ? 1 : 0) + ", "
     			+ maxCapacity + ", "
     			+ "0, " 
-    			+ teacherId + ", "
+    			+ (teacherId == -1 ? "" : String.valueOf(teacherId) + ", ")
     			+ nEcts + ", "
 				+ "'" + faculty + "');";
     	try {
@@ -285,7 +287,7 @@ public class DBHelper {
     }
     
     public boolean removeCourse(String shortId) {
-    	String query = "delete from courses where short_id = " + shortId;
+    	String query = "delete from courses where short_id = '" + shortId + "';";
     	try {
     		stmt = conn.createStatement();
     		boolean ret = stmt.executeUpdate(query) > 0;
@@ -358,6 +360,48 @@ public class DBHelper {
     	return courses.get(shortid);
     }
     
+    public ArrayList<Course> getNonAssignedCourses() {
+    	if (needUpdateCourses) 
+    		populateCoursesCache();
+    	Iterator it = courses.entrySet().iterator();
+    	Map.Entry entry;
+    	ArrayList<Course> retlist = new ArrayList<>();
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            if (((Course)entry.getValue()).getTeacherId() < 1) 
+            	retlist.add((Course)entry.getValue());
+        }
+    	return retlist;
+    }
+    
+    public ArrayList<Course> getCoursesFromTeacher(int teacherId) {
+    	if (needUpdateCourses)
+    		populateCoursesCache();
+    	Iterator it = courses.entrySet().iterator();
+    	Map.Entry entry;
+    	ArrayList<Course> retlist = new ArrayList<>();
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            if (((Course)entry.getValue()).getTeacherId() == teacherId)
+            	retlist.add((Course)entry.getValue());
+        }
+    	return retlist;
+    }
+    
+    public ArrayList<Registration> getRegistrationsFromCourse(String courseId) {
+    	if (needUpdateRegistrations)
+    		populateRegistrationsCache();;
+    	Iterator it = registrations.entrySet().iterator();
+    	Map.Entry entry;
+    	ArrayList<Registration> retlist = new ArrayList<>();
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            if (((Registration)entry.getValue()).getCourseId().equals(courseId))
+            	retlist.add((Registration)entry.getValue());
+        }
+    	return retlist;
+    }
+    
     public String[] getCourseStatus() {
     	String query = "select * from coursestatus;";
     	ArrayList<String> ret = new ArrayList<>();
@@ -392,4 +436,18 @@ public class DBHelper {
         }
     	return retlist;
     } 
+    
+    public boolean assignTeacherToCourse(String courseId, int teacherId) {
+    	String query = "update courses set teacher_id = " + teacherId + " where short_id = '" + courseId + "';";
+    	try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) needUpdateCourses = true;
+    		return ret;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    
+    }
 }

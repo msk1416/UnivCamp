@@ -1,9 +1,9 @@
-<%@page import="pl.mais.mapping.Registration"%>
 <%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="pl.mais.db.DBHelper"%>
 <%@ page import="pl.mais.mapping.*" %>
+<%@ page import="pl.mais.mapping.Registration" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -23,10 +23,6 @@
 	if (current != null && current.getRole() == 'a') {
 	%>
 	<h1>Logged as <%= current.getFirstName() %> <%= current.getLastName() %></h1>
-	<%
-	
-	
-	%>
 	<h3>Users administration</h3>
 	Insert new student:
 	<form action="${ pageContext.request.contextPath }/NewUser" method="post"> 
@@ -90,8 +86,8 @@
 		<label for="openedCB">Opened:</label>
 		<input type="checkbox" name="opened" id="openedCB" style="vertical-align: -2px;">
 		<input type="text" name="maxcapacity" placeholder="Maximum number of students" pattern="^[0-9]*$" required>
-		<select name="teacherid" required>
-			<option disabled selected style="display: none;" value="">Select a teacher</option>
+		<select name="teacherid">
+			<option selected value="-1" style="font-style: italic;">Not assigned yet</option>
 			<% 
 				
 			userlist = db.getUsersByRole('t');
@@ -118,7 +114,7 @@
 	</form>
 	Remove a course from the list:
 	<form action="${ pageContext.request.contextPath }/RemoveCourse" method="post">
-		<select name="coursesToDelete" required>
+		<select name="courseToDelete" required>
 			<option disabled selected style="display: none;" value="">---</option>
 			<% 
 				ArrayList<Course> courseslist = db.getCourses();
