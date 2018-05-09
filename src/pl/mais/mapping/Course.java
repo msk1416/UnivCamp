@@ -66,6 +66,11 @@ public class Course {
 	public void setFaculty(String faculty) {
 		this.faculty = faculty;
 	}
-	
+	public void assignNewStudent() {
+		this.currSize = this.currSize + 1;
+	}
+	public void removeStudent() {
+		this.currSize = this.currSize - 1;
+	}
 	
 }

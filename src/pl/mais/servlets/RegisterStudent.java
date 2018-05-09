@@ -42,7 +42,7 @@ public class RegisterStudent extends HttpServlet {
 		int userToRegister = Integer.parseInt( request.getParameter("userToRegister") );
 		String courseToRegister = request.getParameter("coursesToRegister");
 		Double grade = (request.getParameter("grade") == null) ? null : Double.parseDouble(request.getParameter("grade"));
-		if (grade > 5.0 || grade < 0.0) grade = null;
+		if (grade > 5.0 || grade < 0.0) grade = (double) -1;
 		DBHelper db = (DBHelper)getServletContext().getAttribute("dbhelper");
 		db.open();
 		if ( db.tryLogin(userid, MD5Utils.getMD5HashAsString( request.getParameter("password") )) ) {

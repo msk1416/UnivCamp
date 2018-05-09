@@ -134,7 +134,7 @@ public class DBHelper {
     			c.setMode(rs.getString("mode"));
     			c.setOpened(rs.getBoolean("opened"));
     			c.setMaxCapacity(rs.getInt("max_capacity"));
-    			c.setCurrSize(0);
+    			c.setCurrSize(rs.getInt("current_size"));
     			c.setTeacherId(rs.getInt("teacher_id"));
     			c.setNEcts(rs.getInt("n_ects"));
     			c.setFaculty(rs.getString("faculty"));
@@ -265,11 +265,51 @@ public class DBHelper {
     	try {
     		stmt = conn.createStatement();
     		boolean ret = stmt.executeUpdate(query) > 0;
-    		if (ret) needUpdateRegistrations = true;
+    		if (ret) {
+    			needUpdateRegistrations = true;
+    			if (!assignNewStudent(courseId)) return false;
+    		}
     		return ret;
     	} catch (SQLException e) {
     		e.printStackTrace();
     		return false;
+    	}
+    }
+    
+    public boolean assignNewStudent(String courseId) {
+    	String query = "update courses set current_size = current_size + 1 where short_id = '" + courseId + "';";
+		
+		try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) {
+    			if (courses.get(courseId).getCurrSize() == courses.get(courseId).getMaxCapacity()) 
+    				return false;
+    			else {
+    				courses.get(courseId).assignNewStudent();
+    				needUpdateCourses = true;
+    			}
+    			return true;
+    		} 
+		}catch (SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+		return false;
+    }
+    
+    public void removeStudentFromCourse(String courseId) {
+    	String query = "update courses set current_size = current_size - 1 where short_id = '" + courseId + "';";
+		
+		try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) {
+    			courses.get(courseId).removeStudent();
+    			needUpdateCourses = true;
+    		} 
+		}catch (SQLException e) {
+    		e.printStackTrace();
     	}
     }
     

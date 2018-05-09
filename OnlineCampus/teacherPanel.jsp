@@ -66,12 +66,13 @@
 			<th>Current size</th>
 			<th>ECTS</th>
 			<th>Faculty</th>
+			<th>Students</th>
 		</tr>
 		<%
 			courses = db.getCoursesFromTeacher(current.getId());
 			for (int i = 0; i < courses.size(); i++) {
 				%>
-		<tr>
+		<tr data-href="#">
 			<td><%= courses.get(i).getShortId() %> </td>
 			<td><%= courses.get(i).getFullName() %> </td>
 			<td><%= courses.get(i).getMode() %> </td>
@@ -79,10 +80,14 @@
 			<td><%= courses.get(i).getCurrSize() %>/<%= courses.get(i).getMaxCapacity() %> </td>
 			<td><%= courses.get(i).getNEcts() %> </td>
 			<td><%= courses.get(i).getFaculty() %> </td>
+			<td><a href="#">Student list</a></td>
 		</tr>
 				<%
 			}
 		%>
+	</table>
+	<table id="studentList" style="display: none;">
+		
 	</table>
 	<%
 	} else {
