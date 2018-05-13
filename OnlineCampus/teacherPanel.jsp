@@ -8,6 +8,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="./js/grade_edit.js"></script>
 <title>University campus main page</title>
 </head>
 <style type="text/css">
@@ -21,6 +23,10 @@
 	table {
 		border: 2px solid gray;
 		border-collapse: collapse;
+	}
+	-webkit-outer-spin-button, -webkit-inner-spin-button { 
+		-webkit-appearance: none; 
+		margin: 0;
 	}
 </style>
 
@@ -88,7 +94,10 @@
 			}
 		%>
 	</table>
-	<div id="studentsListSection" style="display: <%= selectedCourse == null ? "none" : "block" %>;">
+	<%
+		if (selectedCourse != null) {
+	%>
+	<div id="studentsListSection" style="display: block;">
 		<h3>Students list: <%= db.getCourseByShortId(selectedCourse).getFullName() %></h3>
 		<table id="studentListTable">
 			<tr>
@@ -103,11 +112,15 @@
 				for (int i = 0; i < regs.size(); i++) {
 					%>
 						<tr>
-							<td><%= regs.get(i).getRegId() %> </td>
-							<td><%= regs.get(i).getStudentId() %> </td>
-							<td><%= db.getUserById(regs.get(i).getStudentId()).getFirstName() %> <%= db.getUserById(regs.get(i).getStudentId()).getLastName() %> </td>
-							<td><%= (regs.get(i).hasGrade()) ? regs.get(i).getGrade() : "No grade" %> </td>
-							<td><%= regs.get(i).getStatusForPrint() %> </td>
+							<td name="regId"><%= regs.get(i).getRegId() %></td>
+							<td name="studentId"><%= regs.get(i).getStudentId() %></td>
+							<td name="studentName"><%= db.getUserById(regs.get(i).getStudentId()).getFirstName() %> <%= db.getUserById(regs.get(i).getStudentId()).getLastName() %></td>
+							<% if (regs.get(i).hasGrade()) { %>
+							<td name="grade"><%= regs.get(i).getGrade()%><input type="image" alt="Edit grade" src="./imgs/edit.png" onclick="setEditMode(this.parentElement);" /></td>
+							<% } else { %> 
+							<td>No grade</td> 
+							<% } %>
+							<td name="status"><%= regs.get(i).getStatusForPrint() %></td>
 						</tr>
 					<%
 				}
@@ -115,6 +128,8 @@
 		</table>
 	</div>
 	<%
+	
+		}
 	} else {
 		%> 
 			<h2 style="color:red">Don't try to get teacher privileges if you do not have.</h2>

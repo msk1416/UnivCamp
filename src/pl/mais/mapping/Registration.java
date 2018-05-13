@@ -48,7 +48,7 @@ public class Registration {
 		} else if (status.equals("np")) {
 			return "Not attended";
 		} else if (status.equals("cur")) {
-			return "Current";
+			return "Attending";
 		}
 		return "Invalid status";
 	}

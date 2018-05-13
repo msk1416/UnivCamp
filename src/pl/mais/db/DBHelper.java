@@ -522,4 +522,17 @@ public class DBHelper {
     	}
     
     }
+    
+    public boolean updateGrade(float grade, String regId) {
+    	String query = "update registrations set grade = " + grade + " where reg_id = '" + regId + "';";
+    	try {
+    		stmt = conn.createStatement();
+    		boolean ret = stmt.executeUpdate(query) > 0;
+    		if (ret) needUpdateRegistrations = true;
+    		return ret;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
 }
