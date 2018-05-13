@@ -8,6 +8,7 @@ public class Registration {
 	private String status;
 	
 	
+	
 	public String getRegId() {
 		return regId;
 	}
@@ -38,6 +39,17 @@ public class Registration {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
+	public boolean hasGrade() {
+		return status.equals("pass") || status.equals("failed");
+	}
+	public String getStatusForPrint() {
+		if (this.hasGrade()) {
+			return status.substring(0, 1).toUpperCase() + status.substring(1);
+		} else if (status.equals("np")) {
+			return "Not attended";
+		} else if (status.equals("cur")) {
+			return "Current";
+		}
+		return "Invalid status";
+	}
 }

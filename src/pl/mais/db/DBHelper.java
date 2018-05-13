@@ -260,7 +260,7 @@ public class DBHelper {
     			+ "'" + studentId + "_" + courseId + "', "
     			+ studentId + ", "
     			+ "'" + courseId + "', "
-    			+ (grade != null ? String.valueOf(grade.doubleValue()) : null) + ", "
+    			+ (grade >= 0 ? String.valueOf(grade.doubleValue()) : null) + ", "
     			+ "'" + status + "');";
     	try {
     		stmt = conn.createStatement();
@@ -314,6 +314,7 @@ public class DBHelper {
     }
     
     public boolean removeUser(int id) {
+    	removeRegistrationsByStudent(id);
     	String query = "delete from users where id = " + id;
     	try {
     		stmt = conn.createStatement();
@@ -327,6 +328,7 @@ public class DBHelper {
     }
     
     public boolean removeCourse(String shortId) {
+    	removeRegistrationsByCourse(shortId);
     	String query = "delete from courses where short_id = '" + shortId + "';";
     	try {
     		stmt = conn.createStatement();
@@ -337,6 +339,36 @@ public class DBHelper {
     		e.printStackTrace();
     		return false;
     	}
+    }
+    
+    public boolean removeRegistrationsByStudent(int userId) {
+    	if (needUpdateRegistrations)
+    		populateRegistrationsCache();
+    	Iterator it = registrations.entrySet().iterator();
+    	Map.Entry entry;
+    	ArrayList<Registration> retlist = new ArrayList<>();
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            if (((Registration)entry.getValue()).getStudentId() == userId)
+            	if (!removeRegistration(((Registration)entry.getValue()).getRegId()))
+            		return false;
+        }
+    	return true;
+    }
+    
+    public boolean removeRegistrationsByCourse(String courseId) {
+    	if (needUpdateRegistrations)
+    		populateRegistrationsCache();
+    	Iterator it = registrations.entrySet().iterator();
+    	Map.Entry entry;
+    	ArrayList<Registration> retlist = new ArrayList<>();
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            if (((Registration)entry.getValue()).getCourseId().equals(courseId))
+            	if (!removeRegistration(((Registration)entry.getValue()).getRegId()))
+            		return false;
+        }
+    	return true;
     }
     
     public boolean removeRegistration(String regId) {

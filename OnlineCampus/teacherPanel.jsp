@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="pl.mais.db.DBHelper"%>
+<%@ page import="pl.mais.mapping.Registration" %>
 <%@ page import="pl.mais.mapping.*" %>
 <%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -32,6 +33,7 @@
 	User current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
 	session.removeAttribute("user");
 	session.setAttribute("user", current);
+	String selectedCourse = request.getParameter("courseid");
 	if (current != null && current.getRole() == 't') {
 	%>
 	<h1>Logged as <%= current.getFirstName() %> <%= current.getLastName() %></h1>
@@ -72,7 +74,7 @@
 			courses = db.getCoursesFromTeacher(current.getId());
 			for (int i = 0; i < courses.size(); i++) {
 				%>
-		<tr data-href="#">
+		<tr>
 			<td><%= courses.get(i).getShortId() %> </td>
 			<td><%= courses.get(i).getFullName() %> </td>
 			<td><%= courses.get(i).getMode() %> </td>
@@ -80,15 +82,38 @@
 			<td><%= courses.get(i).getCurrSize() %>/<%= courses.get(i).getMaxCapacity() %> </td>
 			<td><%= courses.get(i).getNEcts() %> </td>
 			<td><%= courses.get(i).getFaculty() %> </td>
-			<td><a href="#">Student list</a></td>
+			<td><a href="?courseid=<%= courses.get(i).getShortId() %>">Student list</a></td>
 		</tr>
 				<%
 			}
 		%>
 	</table>
-	<table id="studentList" style="display: none;">
-		
-	</table>
+	<div id="studentsListSection" style="display: <%= selectedCourse == null ? "none" : "block" %>;">
+		<h3>Students list: <%= db.getCourseByShortId(selectedCourse).getFullName() %></h3>
+		<table id="studentListTable">
+			<tr>
+			<th>Registration</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Grade</th>
+			<th>Status</th>
+		</tr>
+			<%
+				ArrayList<Registration> regs = db.getRegistrationsFromCourse(selectedCourse);
+				for (int i = 0; i < regs.size(); i++) {
+					%>
+						<tr>
+							<td><%= regs.get(i).getRegId() %> </td>
+							<td><%= regs.get(i).getStudentId() %> </td>
+							<td><%= db.getUserById(regs.get(i).getStudentId()).getFirstName() %> <%= db.getUserById(regs.get(i).getStudentId()).getLastName() %> </td>
+							<td><%= (regs.get(i).hasGrade()) ? regs.get(i).getGrade() : "No grade" %> </td>
+							<td><%= regs.get(i).getStatusForPrint() %> </td>
+						</tr>
+					<%
+				}
+			%>
+		</table>
+	</div>
 	<%
 	} else {
 		%> 
