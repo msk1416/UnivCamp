@@ -524,7 +524,8 @@ public class DBHelper {
     }
     
     public boolean updateGrade(float grade, String regId) {
-    	String query = "update registrations set grade = " + grade + " where reg_id = '" + regId + "';";
+    	String status = grade >= 3 ? "pass" : "failed";
+    	String query = "update registrations set grade = " + grade + ", status = '" + status + "' where reg_id = '" + regId + "';";
     	try {
     		stmt = conn.createStatement();
     		boolean ret = stmt.executeUpdate(query) > 0;

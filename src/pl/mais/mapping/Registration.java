@@ -32,6 +32,8 @@ public class Registration {
 	}
 	public void setGrade(float grade) {
 		this.grade = grade;
+		if (grade >= 3) this.status = "pass";
+		else this.status = "failed";
 	}
 	public String getStatus() {
 		return status;
