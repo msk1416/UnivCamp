@@ -7,6 +7,13 @@
 <title>Login page</title>
 </head>
 <body>
+	<%
+		//if we come from a log out we remove current user from session
+		String param = request.getParameter("f");
+		if (param != null && param.equals("logout")) {
+			request.getSession().removeAttribute("userid");
+		}
+	%>
 	<form action="${pageContext.request.contextPath}/LoginServlet" method="post">
 		User ID: <input type="text" name="username" placeholder="User identification number"><br/>
 		Password: <input type="password" name="password" placeholder="Password"><br/>

@@ -36,10 +36,12 @@
 	DBHelper db = (DBHelper)application.getAttribute("dbhelper");
 	db.open();
 	db.populateUsersCache();
-	User current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
-	session.removeAttribute("user");
-	session.setAttribute("user", current);
-	String selectedCourse = request.getParameter("courseid");
+	if (session.getAttribute("userid") != null) { 
+		User current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
+		session.removeAttribute("user");
+		session.setAttribute("user", current);
+		String selectedCourse = request.getParameter("courseid");
+	
 	if (current != null && current.getRole() == 't') {
 	%>
 	<h1>Logged as <%= current.getFirstName() %> <%= current.getLastName() %></h1>
@@ -116,7 +118,7 @@
 							<td name="studentId"><%= regs.get(i).getStudentId() %></td>
 							<td name="studentName"><%= db.getUserById(regs.get(i).getStudentId()).getFirstName() %> <%= db.getUserById(regs.get(i).getStudentId()).getLastName() %></td>
 							<% if (regs.get(i).hasGrade()) { %>
-							<td name="grade"><%= regs.get(i).getGrade()%><input type="image" alt="Edit grade" src="./imgs/edit.png" onclick="setEditMode(this.parentElement);" /></td>
+							<td name="grade"><%= regs.get(i).getGrade()%><input type="image" alt="Edit grade" src="./imgs/edit.png" onclick="setEditMode(this.parentElement);"  style="color: blue;"/></td>
 							<% } else { %> 
 							<td>No grade</td> 
 							<% } %>
@@ -130,6 +132,12 @@
 	<%
 	
 		}
+	%>
+	
+	<br/>
+	<a href="login.jsp?f=logout" style="color: blue;">Log out</a>
+	<%
+	}
 	} else {
 		%> 
 			<h2 style="color:red">Don't try to get teacher privileges if you do not have.</h2>

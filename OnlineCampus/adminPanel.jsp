@@ -17,10 +17,11 @@
 	DBHelper db = (DBHelper)application.getAttribute("dbhelper");
 	db.open();
 	db.populateUsersCache();
-	User current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
-	session.removeAttribute("user");
-	session.setAttribute("user", current);
-	if (current != null && current.getRole() == 'a') {
+	if (session.getAttribute("userid") != null) {
+		User current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
+		session.removeAttribute("user");
+		session.setAttribute("user", current);
+		if (current != null && current.getRole() == 'a') {
 	%>
 	<h1>Logged as <%= current.getFirstName() %> <%= current.getLastName() %></h1>
 	<h3>Users administration</h3>
@@ -187,7 +188,10 @@
 		<input type="password" name="password" placeholder="Admin password" required>
 		<input type="submit" value="Delete">
 	</form>
+	<br/>
+	<a href="login.jsp?f=logout" style="color: blue;">Log out</a>
 	<%
+		}
 	} else {
 		%> 
 			<h2 style="color:red">Don't try to get administrator privileges if you do not have.</h2>
