@@ -16,7 +16,6 @@
 <%
 	DBHelper db = (DBHelper)application.getAttribute("dbhelper");
 	db.open();
-	db.populateUsersCache();
 	if (session.getAttribute("userid") != null) {
 		User current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
 		session.removeAttribute("user");

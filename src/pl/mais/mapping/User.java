@@ -78,6 +78,9 @@ public class User {
 		if (workingLicense == null) this.workingLicense = "";
 		else this.workingLicense = workingLicense;
 	}
+	public String getFullName() {
+		return firstName + " " + lastName;
+	}
 	
 	
 }

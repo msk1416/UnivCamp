@@ -376,7 +376,10 @@ public class DBHelper {
     	try {
     		stmt = conn.createStatement();
     		boolean ret = stmt.executeUpdate(query) > 0;
-    		if (ret) needUpdateRegistrations = true;
+    		if (ret) {
+    			needUpdateRegistrations = true;
+    			removeStudentFromCourse(regId.substring(regId.indexOf("_")+1));
+    		}
     		return ret;
     	} catch (SQLException e) {
     		e.printStackTrace();
@@ -456,6 +459,20 @@ public class DBHelper {
             entry = (Map.Entry)it.next();
             if (((Course)entry.getValue()).getTeacherId() == teacherId)
             	retlist.add((Course)entry.getValue());
+        }
+    	return retlist;
+    }
+    
+    public ArrayList<Registration> getRegsFromStudent(int studentId) {
+    	if (needUpdateRegistrations)
+    		populateRegistrationsCache();
+    	Iterator it = registrations.entrySet().iterator();
+    	Map.Entry entry;
+    	ArrayList<Registration> retlist = new ArrayList<>();
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            if (((Registration)entry.getValue()).getStudentId() == studentId)
+            	retlist.add((Registration)entry.getValue());
         }
     	return retlist;
     }

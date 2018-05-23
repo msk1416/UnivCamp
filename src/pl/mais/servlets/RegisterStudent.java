@@ -39,27 +39,44 @@ public class RegisterStudent extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int userid = ((User)request.getSession().getAttribute("user")).getId();
-		int userToRegister = Integer.parseInt( request.getParameter("userToRegister") );
-		String courseToRegister = request.getParameter("coursesToRegister");
-		Double grade = (request.getParameter("grade") == null) ? -1 : Double.parseDouble(request.getParameter("grade"));
-		//if (grade != null || grade > 5.0 || grade < 0.0) grade = (double) -1;
+		int userToRegister;
+		String courseToRegister, status;
+		Double grade;
+		boolean requestedByUser = false;
+		if (isRequestedByRightStudent(request.getParameter("requestedBy"))) {
+			userToRegister = Integer.parseInt(request.getParameter("requestedBy"));
+			grade = 0.0;
+			status = "cur";
+			requestedByUser = true;
+		} else {
+			userToRegister = Integer.parseInt( request.getParameter("userToRegister") );
+			grade = (request.getParameter("grade") == null) ? -1 : Double.parseDouble(request.getParameter("grade"));
+			status = request.getParameter("courseStatus");
+		}
+		courseToRegister = request.getParameter("coursesToRegister");
 		DBHelper db = (DBHelper)getServletContext().getAttribute("dbhelper");
 		db.open();
-		if ( db.tryLogin(userid, MD5Utils.getMD5HashAsString( request.getParameter("password") )) ) {
+		if ( requestedByUser || db.tryLogin(userid, MD5Utils.getMD5HashAsString( request.getParameter("password") )) ) {
 			if (db.addRegistration(userToRegister, 
 									courseToRegister, 
 									grade, 
-									request.getParameter("courseStatus"))) {
+									status)) {
 				request.getSession().setAttribute("success", true);
 				request.getSession().setAttribute("object", "Registration");
 				request.getSession().setAttribute("action", "added");
-				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+				if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+				else
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
 				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 			} else {
 				request.getSession().setAttribute("success", false);
 				request.getSession().setAttribute("object", "Registration");
 				request.getSession().setAttribute("action", "added");
-				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+				if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+				else
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
 				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 			}
 		} else {
@@ -68,6 +85,10 @@ public class RegisterStudent extends HttpServlet {
 					+ "<a href=\""+ request.getContextPath() +"/adminPanel.jsp\" style=\"color:blue;\">Go back to your panel</a>"
 					+ "</body></html>");
 		}
+	}
+	
+	private boolean isRequestedByRightStudent(String studentId) {
+		return (studentId != null);
 	}
 
 }

@@ -42,18 +42,25 @@ public class DropStudent extends HttpServlet {
 		String regToDelete = request.getParameter("registersToDrop");
 		DBHelper db = (DBHelper)getServletContext().getAttribute("dbhelper");
 		db.open();
-		if ( db.tryLogin(userid, MD5Utils.getMD5HashAsString( request.getParameter("password") )) ) {
+		//can either be requested by an admin or by the registered student
+		if ( isRequestedByRightStudent(request.getParameter("requestedBy"), regToDelete) || db.tryLogin(userid, MD5Utils.getMD5HashAsString( request.getParameter("password") )) ) {
 			if (db.removeRegistration(regToDelete)) {
 				request.getSession().setAttribute("success", true);
 				request.getSession().setAttribute("action", "removed");
 				request.getSession().setAttribute("object", "Registration");
-				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+				if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+				else
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
 				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 			} else {
 				request.getSession().setAttribute("success", false);
 				request.getSession().setAttribute("action", "removed");
 				request.getSession().setAttribute("object", "Registration");
-				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+				if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+				else
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
 				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
 			}
 		} else {
@@ -62,6 +69,15 @@ public class DropStudent extends HttpServlet {
 					+ "<a href=\""+ request.getContextPath() +"/adminPanel.jsp\" style=\"color:blue;\">Go back to your panel</a>"
 					+ "</body></html>");
 		}
+	}
+	
+	private boolean isRequestedByRightStudent(String requested, String regId) {
+		if (requested != null) {
+			if (regId.contains(requested + "_")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

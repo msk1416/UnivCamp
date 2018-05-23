@@ -11,31 +11,14 @@
 <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="./js/grade_edit.js"></script>
 <title>University campus main page</title>
+<link rel="stylesheet" type="text/css" href="css/tablestyles.css"/>
 </head>
-<style type="text/css">
-	td, th {
-	    border-top: 2px solid gray;
-	    border-collapse: collapse;
-	    border-bottom: 2px solid gray;
-	    padding-right: 7px;
-	    padding-left: 7px;
-	}
-	table {
-		border: 2px solid gray;
-		border-collapse: collapse;
-	}
-	-webkit-outer-spin-button, -webkit-inner-spin-button { 
-		-webkit-appearance: none; 
-		margin: 0;
-	}
-</style>
 
 <body>
 
 <%
 	DBHelper db = (DBHelper)application.getAttribute("dbhelper");
 	db.open();
-	db.populateUsersCache();
 	if (session.getAttribute("userid") != null) { 
 		User current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
 		session.removeAttribute("user");
