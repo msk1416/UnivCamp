@@ -1,0 +1,17 @@
+@charset "ISO-8859-1";
+
+td, th {
+	    border-top: 2px solid gray;
+	    border-collapse: collapse;
+	    border-bottom: 2px solid gray;
+	    padding-right: 7px;
+	    padding-left: 7px;
+	}
+	table {
+		border: 2px solid gray;
+		border-collapse: collapse;
+	}
+	-webkit-outer-spin-button, -webkit-inner-spin-button { 
+		-webkit-appearance: none; 
+		margin: 0;
+	}
