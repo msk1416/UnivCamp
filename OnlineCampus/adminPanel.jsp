@@ -189,6 +189,7 @@
 	</form>
 	<br/>
 	<a href="login.jsp?f=logout" style="color: blue;">Log out</a>
+	<a href="testPage.jsp" style="color: blue;">Go to test page</a>
 	<%
 		}
 	} else {
