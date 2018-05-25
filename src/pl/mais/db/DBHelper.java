@@ -191,6 +191,25 @@ public class DBHelper {
     	return users.get(id);
     }
     
+    public int getIdByUniqueName(String fname, String lname) {
+    	if (needUpdateUsers) 
+    		populateUsersCache();
+    	Iterator it = users.entrySet().iterator();
+    	Map.Entry entry;
+    	int count = 0;
+    	int idRet = -1;
+        while (it.hasNext()) {
+            entry = (Map.Entry)it.next();
+            if ( ((User)entry.getValue()).getFullName().equals(fname + " " + lname) ) {
+            	idRet = ((User)entry.getValue()).getId();
+            	count++;
+            }
+        }
+    	if (count == 1)
+    		return idRet;
+    	else return -1;
+    }
+    
     public boolean addStudent(String firstName, String lastName, String birthday, String email, String currentStudies, int currentEcts) {
     	String query = "insert into users (firstname, lastname, birthday, email, role, curr_studies, curr_ects) values("
     			+ "'" + firstName + "', "

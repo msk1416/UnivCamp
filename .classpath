@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="tests"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sergi/Downloads/sqljdbc_4.2.8112.200_enu.tar/sqljdbc_4.2.8112.200_enu/sqljdbc_4.2/enu/jre8/sqljdbc42.jar"/>
@@ -14,5 +15,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/sergi/Downloads/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sergi/Downloads/junit-4.12.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

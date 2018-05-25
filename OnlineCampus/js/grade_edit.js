@@ -39,11 +39,7 @@ function setEditMode(td) {
 	btnOk.src = "./imgs/ok.png";
 	btnOk.style = "vertical-align: middle;"
 	btnOk.name = "submit";
-//	btnOk.onclick = function(){ 
-//		updateGrade(this.parentElement.parentElement.childNodes[1], 
-//				this.previousSibling.value);
-//		};
-//		
+
 	var btnCancel = document.createElement("input");
 	btnCancel.type = "image";
 	btnCancel.alt = "Discard changes";
@@ -51,7 +47,6 @@ function setEditMode(td) {
 	btnCancel.src = "./imgs/cancel.png";
 	btnCancel.style = "vertical-align: middle; width: 20px; height: 15px;";
 	
-	//td.insertBefore(inputGrade, td.childNodes[0]);
 	form.append(inputGrade);
 	form.append(hidden);
 	form.append(btnOk);

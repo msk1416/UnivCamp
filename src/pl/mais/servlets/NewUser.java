@@ -42,28 +42,41 @@ public class NewUser extends HttpServlet {
 		if (((User)request.getSession().getAttribute("user")).getRole() == 'a') {
 			DBHelper db = (DBHelper)getServletContext().getAttribute("dbhelper");
 			db.open();
+			String fname = request.getParameter("firstname"), lname = request.getParameter("lastname");
 			if (request.getParameter("role").equals("s")) {
-				if (db.addStudent(request.getParameter("firstname"), 
-								request.getParameter("lastname"), 
+				if (db.addStudent(fname, 
+								lname, 
 								request.getParameter("birthday"), 
 								request.getParameter("email"), 
 								request.getParameter("currentstudies"), 
 								Integer.parseInt(request.getParameter("currentects"))) )  {
-					request.getSession().setAttribute("success", true);
-					request.getSession().setAttribute("object", "Student");
-					request.getSession().setAttribute("action", "added");
-					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
-					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+					if (request.getParameter("test") != null && request.getParameter("test").equals("true")) {
+						int id = db.getIdByUniqueName(fname, lname);
+						String responseText = "true;id=" + id;
+						response.getOutputStream().write(responseText.getBytes());
+					} else {
+						request.getSession().setAttribute("success", true);
+						request.getSession().setAttribute("object", "Student");
+						request.getSession().setAttribute("action", "added");
+						request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+						response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+					}
 				} else {
-					request.getSession().setAttribute("success", false);
-					request.getSession().setAttribute("object", "Student");
-					request.getSession().setAttribute("action", "added");
-					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
-					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+					if (request.getParameter("test") != null && request.getParameter("test").equals("true")) {
+						String responseText = "false";
+						response.getOutputStream().write(responseText.getBytes());
+						
+					} else { 
+						request.getSession().setAttribute("success", false);
+						request.getSession().setAttribute("object", "Student");
+						request.getSession().setAttribute("action", "added");
+						request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+						response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+					}
 				}
 			} else if (request.getParameter("role").equals("t")) {
-				if (db.addTeacher(request.getParameter("firstname"), 
-								request.getParameter("lastname"), 
+				if (db.addTeacher(fname, 
+								lname, 
 								request.getParameter("birthday"), 
 								request.getParameter("email"), 
 								request.getParameter("officenumber"))) {
