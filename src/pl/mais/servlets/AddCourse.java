@@ -48,17 +48,25 @@ public class AddCourse extends HttpServlet {
 							 Integer.parseInt( request.getParameter("teacherid") ), 
 							 Integer.parseInt( request.getParameter("nects") ), 
 							 request.getParameter("faculty"))) {
-				request.getSession().setAttribute("success", true);
-				request.getSession().setAttribute("object", "Course");
-				request.getSession().setAttribute("action", "added");
-				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
-				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				if (request.getParameter("test") != null) {
+					response.getOutputStream().write("true".getBytes());
+				} else {
+					request.getSession().setAttribute("success", true);
+					request.getSession().setAttribute("object", "Course");
+					request.getSession().setAttribute("action", "added");
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				}
 			} else {
-				request.getSession().setAttribute("success", false);
-				request.getSession().setAttribute("object", "Course");
-				request.getSession().setAttribute("action", "added");
-				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
-				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				if (request.getParameter("test") != null) {
+					response.getOutputStream().write("false".getBytes());
+				} else {
+					request.getSession().setAttribute("success", false);
+					request.getSession().setAttribute("object", "Course");
+					request.getSession().setAttribute("action", "added");
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				}
 			}
 			db.close();
 		}

@@ -45,23 +45,31 @@ public class DropStudent extends HttpServlet {
 		//can either be requested by an admin or by the registered student
 		if ( isRequestedByRightStudent(request.getParameter("requestedBy"), regToDelete) || db.tryLogin(userid, MD5Utils.getMD5HashAsString( request.getParameter("password") )) ) {
 			if (db.removeRegistration(regToDelete)) {
-				request.getSession().setAttribute("success", true);
-				request.getSession().setAttribute("action", "removed");
-				request.getSession().setAttribute("object", "Registration");
-				if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
-					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
-				else
-					request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
-				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				if (request.getParameter("test") != null) {
+					response.getOutputStream().write("true".getBytes());
+				} else {
+					request.getSession().setAttribute("success", true);
+					request.getSession().setAttribute("action", "removed");
+					request.getSession().setAttribute("object", "Registration");
+					if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
+						request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					else
+						request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				}
 			} else {
-				request.getSession().setAttribute("success", false);
-				request.getSession().setAttribute("action", "removed");
-				request.getSession().setAttribute("object", "Registration");
-				if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
-					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
-				else
-					request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
-				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				if (request.getParameter("test") != null) {
+					response.getOutputStream().write("false".getBytes());
+				} else {
+					request.getSession().setAttribute("success", false);
+					request.getSession().setAttribute("action", "removed");
+					request.getSession().setAttribute("object", "Registration");
+					if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
+						request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					else
+						request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				}
 			}
 		} else {
 			response.getWriter().println("<html><body>"

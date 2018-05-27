@@ -61,23 +61,31 @@ public class RegisterStudent extends HttpServlet {
 									courseToRegister, 
 									grade, 
 									status)) {
-				request.getSession().setAttribute("success", true);
-				request.getSession().setAttribute("object", "Registration");
-				request.getSession().setAttribute("action", "added");
-				if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
-					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
-				else
-					request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
-				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				if (request.getParameter("test") != null) {
+					response.getOutputStream().write("true".getBytes());
+				} else {
+					request.getSession().setAttribute("success", true);
+					request.getSession().setAttribute("object", "Registration");
+					request.getSession().setAttribute("action", "added");
+					if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
+						request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					else
+						request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				}
 			} else {
-				request.getSession().setAttribute("success", false);
-				request.getSession().setAttribute("object", "Registration");
-				request.getSession().setAttribute("action", "added");
-				if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
-					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
-				else
-					request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
-				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				if (request.getParameter("test") != null) {
+					response.getOutputStream().write("false".getBytes());
+				} else {
+					request.getSession().setAttribute("success", false);
+					request.getSession().setAttribute("object", "Registration");
+					request.getSession().setAttribute("action", "added");
+					if (((User)request.getSession().getAttribute("user")).getRole() == 'a')
+						request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					else
+						request.getSession().setAttribute("redirect", request.getContextPath() + "/studentPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				}
 			}
 		} else {
 			response.getWriter().println("<html><body>"

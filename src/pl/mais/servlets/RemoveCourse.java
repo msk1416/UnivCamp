@@ -44,17 +44,25 @@ public class RemoveCourse extends HttpServlet {
 		db.open();
 		if ( db.tryLogin(userid, MD5Utils.getMD5HashAsString( request.getParameter("password") )) ) {
 			if (db.removeCourse(courseToDelete)) {
-				request.getSession().setAttribute("success", true);
-				request.getSession().setAttribute("action", "removed");
-				request.getSession().setAttribute("object", "Course");
-				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
-				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				if (request.getParameter("test") != null) {
+					response.getOutputStream().write("true".getBytes());
+				} else {
+					request.getSession().setAttribute("success", true);
+					request.getSession().setAttribute("action", "removed");
+					request.getSession().setAttribute("object", "Course");
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				}
 			} else {
-				request.getSession().setAttribute("success", false);
-				request.getSession().setAttribute("action", "removed");
-				request.getSession().setAttribute("object", "Course");
-				request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
-				response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				if (request.getParameter("test") != null) {
+					response.getOutputStream().write("false".getBytes());
+				} else {
+					request.getSession().setAttribute("success", false);
+					request.getSession().setAttribute("action", "removed");
+					request.getSession().setAttribute("object", "Course");
+					request.getSession().setAttribute("redirect", request.getContextPath() + "/adminPanel.jsp");
+					response.sendRedirect(request.getContextPath() + "/resultPage.jsp");
+				}
 			}
 		} else {
 			response.getWriter().println("<html><body>"
