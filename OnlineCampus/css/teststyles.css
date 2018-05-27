@@ -1,0 +1,14 @@
+@charset "ISO-8859-1";
+
+#statusMsgDiv .statusMsg {
+	visibility = visible;
+	font-weight: bold;
+}
+
+#statusMsgDiv .succeeded {
+	color: green;
+}
+
+#statusMsgDiv .failed {
+	color: red;
+}
