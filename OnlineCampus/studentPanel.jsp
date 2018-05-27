@@ -12,9 +12,9 @@
 <link rel="stylesheet" type="text/css" href="css/tablestyles.css"/>
 </head>
 <body>
-<%
+	<%
 	DBHelper db = (DBHelper)application.getAttribute("dbhelper");
-	db.open();
+	if (db != null) db.open();
 	if (session.getAttribute("userid") != null) {
 		User current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
 		session.removeAttribute("user");
@@ -44,7 +44,7 @@
 			<td><%= regs.get(i).getCourseId() %></td>
 			<td><%= regs.get(i).getStatusForPrint() %></td>
 			<td><%= regs.get(i).hasGrade() ? regs.get(i).getGrade() : "" %></td>
-			<td><%= db.getUserById(c.getTeacherId()).getFullName() %></td>
+			<td><%= c.getTeacherId() > 0 ? db.getUserById(c.getTeacherId()).getFullName() : "Not assigned" %></td>
 			<td><%= c.getNEcts() %></td>
 			<td><%= c.getFaculty() %></td>
 			<td>
