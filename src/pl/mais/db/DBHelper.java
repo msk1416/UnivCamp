@@ -296,6 +296,8 @@ public class DBHelper {
     }
     
     public boolean assignNewStudent(String courseId) {
+		if (needUpdateCourses)
+			populateCoursesCache();
     	String query = "update courses set current_size = current_size + 1 where short_id = '" + courseId + "';";
 		
 		try {
@@ -418,7 +420,6 @@ public class DBHelper {
             if (u.getRole() == role) {
             	retlist.add(u);
             }
-            //it.remove(); // avoids a ConcurrentModificationException
         }
     	return retlist;
     }
@@ -571,5 +572,13 @@ public class DBHelper {
     		e.printStackTrace();
     		return false;
     	}
+    }
+    
+    public int getRandomStudentId() {
+    	ArrayList<User> students = getUsersByRole('s');
+    	Random generator = new Random();
+    	Object[] values = students.toArray();
+    	int randomValue = ((User)values[generator.nextInt(values.length)]).getId();
+    	return randomValue;
     }
 }
