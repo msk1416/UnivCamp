@@ -15,9 +15,16 @@
 		}
 	%>
 	<form action="${pageContext.request.contextPath}/LoginServlet" method="post">
-		User ID: <input type="text" name="username" placeholder="User identification number"><br/>
-		Password: <input type="password" name="password" placeholder="Password"><br/>
+		User ID: <input type="text" name="username" placeholder="User identification number" required><br/>
+		Password: <input type="password" name="password" placeholder="Password" required><br/>
 		<input type="submit" value="Sign in">
+		<%
+			if (param != null && param.equals("creds")) {
+		%>
+		<p style="color: red; display:inline;">Invalid user or password</p>
+		<%
+			}
+		%>
 	</form>
 	
 

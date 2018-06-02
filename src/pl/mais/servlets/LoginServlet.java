@@ -43,14 +43,15 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		DBHelper db = new DBHelper();
 		db.open();
+		String username = request.getParameter("username");
 		try {
 			String encryptedPassword = 
 					MD5Utils.getMD5HashAsString(request.getParameter("password"));
-			if (db.tryLogin(Integer.parseInt(request.getParameter("username")), encryptedPassword)) {
+			if (db.tryLogin(Integer.parseInt(username), encryptedPassword)) {
 				//login succeeded
 				getServletContext().setAttribute("dbhelper", db);
-				char role = db.getUserById(Integer.parseInt(request.getParameter("username"))).getRole();
-				request.getSession().setAttribute("userid", request.getParameter("username"));
+				char role = db.getUserById(Integer.parseInt(username)).getRole();
+				request.getSession().setAttribute("userid", username);
 				
 				if (role == 'a') {
 					response.sendRedirect(request.getContextPath() + "/adminPanel.jsp");
@@ -60,10 +61,11 @@ public class LoginServlet extends HttpServlet {
 					response.sendRedirect(request.getContextPath() + "/teacherPanel.jsp");
 				}
 			} else {
-				response.sendRedirect(request.getContextPath() + "/login.jsp");
+				response.sendRedirect(request.getContextPath() + "/login.jsp?f=creds");
 			}
-		} catch (Exception e) {
+		} catch (IOException | NumberFormatException e) {
 			e.printStackTrace();
+			response.sendRedirect(request.getContextPath() + "/login.jsp?f=creds");
 		} finally {
 			db.close();
 		}
