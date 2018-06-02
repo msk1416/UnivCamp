@@ -43,7 +43,7 @@ public class UpdateGrade extends HttpServlet {
 		String regId = request.getParameter("regId");
 		String course = regId.substring(regId.indexOf('_')+1);
 		db.open();
-		if (grade != 0.0f && regId != null && db.updateGrade(grade, regId)) {
+		if (regId != null && db.updateGrade(grade, regId)) {
 			request.getSession().setAttribute("success", true);
 			request.getSession().setAttribute("object", "Grade");
 			request.getSession().setAttribute("action", "updated");
