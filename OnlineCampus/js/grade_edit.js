@@ -1,9 +1,9 @@
 /**
  * 
  */
-
+var backupTdContent;
 function setEditMode(td) {
-	
+	backupTdContent = td.innerHTML;
 	var form = document.createElement("form");
 	form.method = "POST";
 	form.action = window.location.pathname.substring(0, window.location.pathname.indexOf("/",2)) + "/UpdateGrade";
@@ -46,7 +46,9 @@ function setEditMode(td) {
 	btnCancel.title = "Discard changes";
 	btnCancel.src = "./imgs/cancel.png";
 	btnCancel.style = "vertical-align: middle; width: 20px; height: 15px;";
-	
+	btnCancel.onclick = function() {
+		this.parentElement.parentElement.innerHTML = backupTdContent;
+	}
 	form.append(inputGrade);
 	form.append(hidden);
 	form.append(btnOk);
