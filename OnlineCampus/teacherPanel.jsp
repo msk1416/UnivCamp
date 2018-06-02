@@ -19,12 +19,14 @@
 <%
 	DBHelper db = (DBHelper)application.getAttribute("dbhelper");
 	db.open();
+	User current = null;
+	String selectedCourse = null;
 	if (session.getAttribute("userid") != null) { 
-		User current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
+		current = db.getUserById(Integer.valueOf((String)session.getAttribute("userid")));
 		session.removeAttribute("user");
 		session.setAttribute("user", current);
-		String selectedCourse = request.getParameter("courseid");
-	
+		selectedCourse = request.getParameter("courseid");
+	}
 	if (current != null && current.getRole() == 't') {
 	%>
 	<h1>Logged as <%= current.getFirstName() %> <%= current.getLastName() %></h1>
@@ -120,7 +122,7 @@
 	<br/>
 	<a href="login.jsp?f=logout" style="color: blue;">Log out</a>
 	<%
-	}
+	
 	} else {
 		%> 
 			<h2 style="color:red">Don't try to get teacher privileges if you do not have.</h2>
