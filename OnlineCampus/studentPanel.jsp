@@ -48,11 +48,15 @@
 			<td><%= c.getNEcts() %></td>
 			<td><%= c.getFaculty() %></td>
 			<td>
+				<% if (regs.get(i).hasGrade()) { %>
+				Finished
+				<% } else { %>
 				<form action="${ pageContext.request.contextPath }/DropStudent" method="post">
 					<input type="hidden" name="requestedBy" value="<%= current.getId() %>"/>
 					<input type="hidden" name="registersToDrop" value="<%= regs.get(i).getRegId() %>"/>
-					<input type="submit" value="Remove" />
+					<input type="submit" value="Drop" />
 				</form>
+				<% } %>
 			</td>
 		</tr>
 			<%
