@@ -158,7 +158,7 @@ function addNewCourseAjax() {
 
 function registerStudentToCourseAjax(responseText) {
 	responseText.includes("true") ? 
-			msgSuccess(info.i, "Course has beed added successfully.") : msgFailure(info.i, "Course could not be added.");
+			msgSuccess(info.i, "Course has been added successfully.") : msgFailure(info.i, "Course could not be added.");
 	info.addCourseInfo(5.0, "pass", "admin");
 
 	$.ajax({
